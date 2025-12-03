@@ -157,84 +157,99 @@ namespace ProjectEye.Core.Service
             var data = new UIDesignModel();
             data.ContainerAttr = new ContainerModel()
             {
-                Background = Brushes.White,
-                Opacity = .98
+                // 使用深色背景，减少刺眼感
+                Background = Project1UIColor.Get("#1A1B1C"),
+                Opacity = .95
             };
 
             var elements = new List<ElementModel>();
+            
+            // 图片
             var tipimage = new ElementModel();
             tipimage.Type = Project1.UI.Controls.Enums.DesignItemType.Image;
-            tipimage.Width = 272;
+            tipimage.Width = 200; // 稍微调小一点图片，让整体更精致
             tipimage.Opacity = 1;
-            tipimage.Height = 187;
+            tipimage.Height = 138;
             tipimage.Image = $"pack://application:,,,/ProjectEye;component/Resources/Themes/{themeName}/Images/tipImage.png";
             tipimage.X = screenSize.Width / 2 - tipimage.Width / 2;
-            tipimage.Y = screenSize.Height * .24;
+            tipimage.Y = screenSize.Height * .20;
 
+            // 主提示文本
             var tipText = new ElementModel();
             tipText.Type = Project1.UI.Controls.Enums.DesignItemType.Text;
-            tipText.Text = "您已持续用眼{t}分钟，休息一会吧！请将注意力集中在至少6米远的地方20秒！";
+            tipText.Text = "您已持续用眼{t}分钟，休息一会吧！\n请将注意力集中在至少6米远的地方20秒！";
             tipText.Opacity = 1;
-            tipText.TextColor = Project1UIColor.Get("#45435b");
-            tipText.Width = 400;
-            tipText.Height = 50;
+            tipText.TextColor = Project1UIColor.Get("#E0E0E0"); // 浅灰白色文字
+            tipText.Width = 500;
+            tipText.Height = 80;
             tipText.X = screenSize.Width / 2 - tipText.Width / 2;
-            tipText.Y = tipimage.Y + tipimage.Height + tipText.Height + 10;
-            tipText.FontSize = 20;
+            tipText.Y = tipimage.Y + tipimage.Height + 30;
+            tipText.FontSize = 22;
+            tipText.TextAlignment = 1; // Center
 
+            // 健康小贴士
+            var healthTipText = new ElementModel();
+            healthTipText.Type = Project1.UI.Controls.Enums.DesignItemType.Text;
+            healthTipText.Text = "{HealthTip}";
+            healthTipText.Opacity = 0.8;
+            healthTipText.TextColor = Project1UIColor.Get("#A0A0A0"); // 较暗的灰色
+            healthTipText.Width = 600;
+            healthTipText.Height = 60;
+            healthTipText.X = screenSize.Width / 2 - healthTipText.Width / 2;
+            healthTipText.Y = tipText.Y + tipText.Height + 10;
+            healthTipText.FontSize = 16;
+            healthTipText.TextAlignment = 1; // Center
+
+            // 倒计时
+            var countDownText = new ElementModel();
+            countDownText.Text = "{countdown}";
+            countDownText.FontSize = 60;
+            countDownText.IsTextBold = true;
+            countDownText.Type = Project1.UI.Controls.Enums.DesignItemType.Text;
+            countDownText.TextColor = Project1UIColor.Get("#FFB803"); // 醒目的颜色
+            countDownText.Opacity = 1;
+            countDownText.Width = 120;
+            countDownText.Height = 80;
+            countDownText.X = screenSize.Width / 2 - countDownText.Width / 2;
+            countDownText.Y = healthTipText.Y + healthTipText.Height + 20;
+            countDownText.TextAlignment = 1;
+
+            // 按钮区域
+            double buttonY = countDownText.Y + countDownText.Height + 30;
+
+            // 休息按钮
             var restBtn = new ElementModel();
             restBtn.Type = Project1.UI.Controls.Enums.DesignItemType.Button;
-            restBtn.Width = 110;
-            restBtn.Height = 45;
-            restBtn.FontSize = 14;
+            restBtn.Width = 140;
+            restBtn.Height = 50;
+            restBtn.FontSize = 16;
             restBtn.Text = "好的";
             restBtn.Opacity = 1;
             restBtn.Command = "rest";
+            // 使用默认样式或自定义更显眼的样式
+            
+            restBtn.X = screenSize.Width / 2 - (restBtn.Width * 2 + 40) / 2;
+            restBtn.Y = buttonY;
 
-            restBtn.X = screenSize.Width / 2 - (restBtn.Width * 2 + 10) / 2;
-            restBtn.Y = tipText.Y + tipText.Height + 20;
-
+            // 跳过按钮
             var breakBtn = new ElementModel();
             breakBtn.Type = Project1.UI.Controls.Enums.DesignItemType.Button;
-            breakBtn.Width = 110;
-            breakBtn.Height = 45;
-            breakBtn.FontSize = 14;
-            breakBtn.Text = "暂时不";
-            breakBtn.Style = "basic";
+            breakBtn.Width = 140;
+            breakBtn.Height = 50;
+            breakBtn.FontSize = 16;
+            breakBtn.Text = "跳过"; // 改为中文“跳过”更直观
+            breakBtn.Style = "basic"; // 保持 basic 样式，或者移除以使用默认
             breakBtn.Command = "break";
-            breakBtn.Opacity = 1;
-            breakBtn.X = screenSize.Width / 2 - (restBtn.Width * 2 + 10) / 2 + (restBtn.Width + 10);
-            breakBtn.Y = tipText.Y + tipText.Height + 20;
+            breakBtn.Opacity = 0.8;
+            breakBtn.X = screenSize.Width / 2 - (restBtn.Width * 2 + 40) / 2 + (restBtn.Width + 40);
+            breakBtn.Y = buttonY;
 
-            var countDownText = new ElementModel();
-            countDownText.Text = "{countdown}";
-            countDownText.FontSize = 50;
-            countDownText.IsTextBold = true;
-            countDownText.Type = Project1.UI.Controls.Enums.DesignItemType.Text;
-            countDownText.TextColor = Brushes.Black;
-            countDownText.Opacity = 1;
-            countDownText.Width = 100;
-            countDownText.Height = 60;
-            countDownText.X = screenSize.Width / 2 - countDownText.Width / 2;
-            countDownText.Y = restBtn.Y + restBtn.Height;
-
-
-
-            if (themeName == "Dark")
-            {
-                //深色主题的样式
-
-                data.ContainerAttr.Background = Project1UIColor.Get("#1A1B1C");
-                tipText.TextColor = Project1UIColor.Get("#D9D9D9");
-                countDownText.TextColor = Project1UIColor.Get("#D9D9D9");
-
-            }
             elements.Add(tipimage);
             elements.Add(tipText);
+            elements.Add(healthTipText);
+            elements.Add(countDownText);
             elements.Add(restBtn);
             elements.Add(breakBtn);
-            elements.Add(countDownText);
-
 
             data.Elements = elements;
 

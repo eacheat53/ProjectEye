@@ -33,6 +33,9 @@ namespace ProjectEye.ViewModels
         /// </summary>
         public Command busyCommand { get; set; }
 
+        // 健康提示
+        public string HealthTip { get; set; }
+
         private readonly RestService reset;
         private readonly SoundService sound;
         private readonly ConfigService config;
@@ -43,6 +46,20 @@ namespace ProjectEye.ViewModels
         private readonly ThemeService theme;
 
         public event ViewModelEventHandler ChangedEvent;
+
+        private readonly string[] _healthTips = new string[]
+        {
+            "伸个懒腰，深呼吸，放松一下紧绷的肌肉吧。",
+            "眺望远方，让眼睛离开屏幕，看看窗外的世界。",
+            "眨眨眼睛，保持眼部湿润，预防干眼症。",
+            "站起来走动走动，促进血液循环，赶走疲劳。",
+            "转动一下脖子和肩膀，缓解颈椎压力。",
+            "喝杯水，补充水分，让身体充满活力。",
+            "做个眼保健操，按按太阳穴，放松眼部神经。",
+            "闭上眼睛，静坐一分钟，让大脑休息片刻。",
+            "看看绿植，绿色能有效缓解视觉疲劳。",
+            "保持正确的坐姿，保护脊椎健康。"
+        };
 
         public TipViewModel(RestService reset,
             SoundService sound,
@@ -75,8 +92,18 @@ namespace ProjectEye.ViewModels
             theme.OnChangedTheme += Theme_OnChangedTheme;
             ChangedEvent += TipViewModel_ChangedEvent;
             main.OnHandleTimeout += Main_OnHandleTimeout;
+            
+            // 初始化健康提示
+            UpdateHealthTip();
+            
             LoadConfig();
 
+        }
+
+        private void UpdateHealthTip()
+        {
+            var random = new Random();
+            HealthTip = _healthTips[random.Next(_healthTips.Length)];
         }
 
         private void Main_OnHandleTimeout(object service, int msg)
@@ -110,6 +137,7 @@ namespace ProjectEye.ViewModels
 
         private void TipViewModel_OnWShow(object sender, EventArgs e)
         {
+            UpdateHealthTip(); // 每次显示时更新提示
             UpdateVariable();
             if (!config.options.Style.IsThruTipWindow)
             {
@@ -166,7 +194,8 @@ namespace ProjectEye.ViewModels
         private void CreateUI()
         {
             var container = new Grid();
-            string uiFilePath = $"UI\\{config.options.Style.Theme.ThemeName}_{ScreenName}.json";
+            // 更新版本号以强制重新生成UI
+            string uiFilePath = $"UI\\{config.options.Style.Theme.ThemeName}_{ScreenName}_v2.json";
             var data = JsonConvert.DeserializeObject<UIDesignModel>(FileHelper.Read(uiFilePath));
             if (data == null)
             {
